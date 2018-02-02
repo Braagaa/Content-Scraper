@@ -1,0 +1,8 @@
+{
+    "source": {
+        "include": ["./scraper.js"]
+    },
+    "opts": {
+        "destination": "./docs"
+    }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "web_scraper",
+  "version": "0.0.0",
+  "description": "A simple web scrapper for a specific site",
+  "main": "scraper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "webscrapper",
+    "webcrawler",
+    "crawler",
+    "dom",
+    "nodescraper",
+    "webcrawler",
+    "scraper"
+  ],
+  "author": "Michael Braga",
+  "license": "MIT",
+  "dependencies": {
+    "csv-stringify": "^2.0.1",
+    "jsdom": "^11.6.2",
+    "ramda": "^0.25.0"
+  }
+}
