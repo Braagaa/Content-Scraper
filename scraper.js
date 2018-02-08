@@ -1,6 +1,7 @@
-const {tryCheckCreateFolderSync} = require('./js/file_handling');
+const {tryCheckCreateFolderSync, writeCSV} = require('./js/file_handling');
 const {promisify} = require('util');
 const {JSDOM: {fromURL}} = require('jsdom');
+const {now} = require('./js/time');
 const R = require('ramda');
 
 const stringify = promisify(require('csv-stringify/lib'));
@@ -56,10 +57,11 @@ R.pipe(querySelectorAll(selector), R.head, R.prop(prop));
  * @see {@link http://ramdajs.com/docs/#path}
  */
 const neededValues = R.applySpec({
-    price: selectRetrieveProp('.price', 'textContent'),
     title: R.pipe(selectRetrieveProp('.shirt-details h1', 'textContent'), R.replace(/\$\d+ /g, '')),
+    price: selectRetrieveProp('.price', 'textContent'),
+    imageUrl: selectRetrieveProp('.shirt-picture img', 'src'),
     url: R.prop('URL'),
-    imageUrl: selectRetrieveProp('.shirt-picture img', 'src')
+    time: now('hh:mm a')
 });
 
 /**
@@ -79,10 +81,11 @@ const generateCsv = R.curry((options, items) => stringify(items, options));
  * @default
  */
 const columns = {
-    price: 'price',
-    title: 'title',
+    title: 'Title',
+    price: 'Price',
+    imageUrl: 'imageURL',
     url: 'URL',
-    imageUrl: 'imageURL'
+    time: 'Time'
 };
 
 fromURL(target)
@@ -93,6 +96,6 @@ fromURL(target)
 .then(promiseAll)
 .then(R.map(R.path(['window', 'document'])))
 .then(R.map(neededValues))
-.then(generateCsv({header: true, columns}))
-.then(item => console.log(item))
+.then(generateCsv({header: true, quotedEmpty: true, columns}))
+.then(writeCSV(dataFolder))
 .catch(error => console.error(error.message))

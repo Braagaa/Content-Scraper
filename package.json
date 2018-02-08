@@ -21,6 +21,7 @@
   "dependencies": {
     "csv-stringify": "^2.0.1",
     "jsdom": "^11.6.2",
+    "moment": "^2.20.1",
     "ramda": "^0.25.0"
   }
 }
