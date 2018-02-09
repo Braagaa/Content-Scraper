@@ -1,4 +1,4 @@
-const {tryCheckCreateFolderSync, writeCSV} = require('./js/file_handling');
+const {checkCreateFolderSync, writeCSV} = require('./js/file_handling');
 const {promisify} = require('util');
 const {JSDOM: {fromURL}} = require('jsdom');
 const {now} = require('./js/time');
@@ -83,12 +83,13 @@ const generateCsv = R.curry((options, items) => stringify(items, options));
 const columns = {
     title: 'Title',
     price: 'Price',
-    imageUrl: 'imageURL',
+    imageUrl: 'ImageURL',
     url: 'URL',
     time: 'Time'
 };
 
 fromURL(target)
+.then(R.tap(checkCreateFolderSync([dataFolder])))
 .then(R.path(['window', 'document']))
 .then(querySelectorAll('.products a'))
 .then(R.map(R.prop('href')))
@@ -98,4 +99,4 @@ fromURL(target)
 .then(R.map(neededValues))
 .then(generateCsv({header: true, quotedEmpty: true, columns}))
 .then(writeCSV(dataFolder))
-.catch(error => console.error(error.message))
+.catch(error => console.error(error.message));
