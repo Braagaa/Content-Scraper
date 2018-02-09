@@ -47,13 +47,23 @@ const createArgs = R.juxt([createCsvTitle, R.identity]);
  * @returns {boolean}
  * @see {@link http://ramdajs.com/docs/#partial}
  */
-const checkCreateFolderSync = R.partial(function(path) {
+const checkCreateFolderSync = function(path) {
     if (!existsSync(path)) {
         mkdirSync(path);
     }
 
     return true;
-});
+};
+
+/**
+ * A map version of checkCreateFolderSync to check multiple directories.
+ *
+ * @param {Array} - Array of string of directories
+ * @returns {undefined}
+ * @see {@link checkCreateFolderSync}
+ * @see {@link http://ramdajs.com/docs/#map}
+ */
+const checkCreateFoldersSync = R.map(checkCreateFolderSync);
 
 /**
  * Creates the title for the CSV, uses the title as the file name, and 
@@ -73,4 +83,4 @@ const writeCSV = R.curry(function(folder, csv) {
     .then(R.apply(writeFile));
 });
 
-module.exports = {checkCreateFolderSync, writeCSV};
+module.exports = {checkCreateFolderSync, checkCreateFoldersSync, writeCSV};
