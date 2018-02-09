@@ -77,6 +77,33 @@ const neededValues = R.applySpec({
 const generateCsv = R.curry((options, items) => stringify(items, options));
 
 /**
+ * If a err.name match the name we are look for, changes the 
+ * message of the error.message to our liking and rethrows the Error Object.
+ * Else rethrows the Error Object without changing the message on it.
+ *
+ * @param {string} type - Name of error trying to look for.
+ * @param {string} message - Input of your own message to be placed.
+ * @param {Object} err - The error object that has been thrown.
+ * @throws Rethrows same Error Object.
+ * @see {@link http://ramdajs.com/docs/#curry}
+ */
+const checkError = R.curry(function(type, message, err) {
+    if (err.name === type) {
+        err.message = message;
+    }
+    throw err;
+});
+
+/**
+ * A curried function of checkError where its first parameter is already
+ * taken as the string 'RequestError'.
+ *
+ * @func
+ * @see {@link checkError} for more details.
+ */
+const requestError = checkError('RequestError');
+
+/**
  * @const {Object}
  * @default
  */
@@ -89,6 +116,7 @@ const columns = {
 };
 
 fromURL(target)
+.catch(requestError(`Cannot connect with ${target}`))
 .then(R.tap(checkCreateFolderSync([dataFolder])))
 .then(R.path(['window', 'document']))
 .then(querySelectorAll('.products a'))
